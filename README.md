@@ -3,6 +3,10 @@ ESP8266 WebsocketClient
 
 A simple Websocket Client for the ESP8266. Supporting ws:// & wss://.
 
+Modified by Nicholas for use in Autolab Lightsaber:
+- Disable SSL certificate validation
+- Make HTTP header keys case-insensitive to follow the HTTP RFC
+
 Example:
 
 ```

@@ -17,8 +17,11 @@
 #endif
 
 WebSocketClient::WebSocketClient(bool secure) {
-	if (secure)
-		this->client = new WiFiClientSecure;
+	if (secure) {
+		WiFiClientSecure *w = new WiFiClientSecure;
+		w->setInsecure();  // Disable certificate verification
+		this->client = w;
+	}
 	else
 		this->client = new WiFiClient;
 }
@@ -102,15 +105,16 @@ bool WebSocketClient::connect(String host, String path, int port) {
 		else if (s.indexOf(":") != -1) {
 			auto col = s.indexOf(":");
 			auto key = s.substring(0, col);
+			key.toLowerCase();  // Make all headers lowercase for case-insensitve comparison
 			auto value = s.substring(col + 2, s.length() - 1);
 
-			if (key == "Connection" && (value == "Upgrade" || value == "upgrade"))
+			if (key == "connection" && (value == "Upgrade" || value == "upgrade"))
 				isUpgrade = true;
 
-			else if (key == "Sec-WebSocket-Accept")
+			else if (key == "sec-websocket-accept")
 				hasAcceptedKey = true;
 
-			else if (key == "Upgrade" && value == "websocket")
+			else if (key == "upgrade" && value == "websocket")
 				isWebsocket = true;
 		}
 
